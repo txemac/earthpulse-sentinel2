@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from starlette import status
 
+from src.image.infrastructure.views.image import images_router
 from src.messages import API_TITLE
 from src.messages import API_VERSION
 
@@ -16,6 +17,8 @@ api = FastAPI(
     title=API_TITLE,
     version=API_VERSION,
 )
+
+api.include_router(images_router, tags=["Images"], prefix="/images")
 
 
 # health endpoint
