@@ -4,7 +4,7 @@ The objective of this test is to evaluate the candidate’s ability developing P
 geospatial data. You are asked to build a Python web API to work with the provided Sentinel 2 satellite image and
 fulfill the following requirements:
 
-1. An `/attributes endpoint that receives the image as an input parameter, reads the image and returns the
+1. An `/attributes` endpoint that receives the image as an input parameter, reads the image and returns the
    following [attributes](https://rasterio.readthedocs.io/en/latest/quickstart.html#dataset-attributes) as a JSON
    object: image size (width and height), number of bands, coordinate reference system and georeferenced bounding box.
 2. A `/thumbnail` endpoint that receives the image as an input parameter and returns an RGB thumbnail of the image as a
@@ -33,3 +33,43 @@ testing and Docker support to the application.
 Be creative and don’t hesitate to show off your skills!
 
 If you have any doubt, send an email to careers@earthpulse.es.
+
+# Solution
+
+Considerations:
+
+- the first consideration is to use FastAPI as web framework to create the API, it is fast and with a big community
+  behind.
+- Documentation, other big point of FastAPI... easy and automatic.
+- Continuous integration with GitHub action, necessary to check tests and the linting with flake8.
+- All endpoints are to get info... so the normal way is to use GET endpoints. In this system the endpoints need to
+  receive an image like input parameter. The definition of GET requests don't have the option to send a file, so,
+  one solution is to use POST endpoints and send the file like a parameter.
+
+## Commands
+
+Create a virtual environment and to activate it.
+
+### Run project:
+
+```bash
+uvicorn src.main:api
+```
+
+After run, you can check the health in:
+
+http://127.0.0.1:8000/health
+
+And view the API documentation in:
+
+http://127.0.0.1:8000/redoc
+
+or swagger in:
+
+http://127.0.0.1:8000/docs
+
+### Tests
+
+```bash
+pytest -vvv
+```
