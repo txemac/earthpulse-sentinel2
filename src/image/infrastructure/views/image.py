@@ -1,10 +1,9 @@
-from typing import Tuple
-
 import rasterio
 from fastapi import APIRouter
 from fastapi import UploadFile
 from starlette import status
 
+from src.image.application.get_ndvi import get_ndvi
 from src.image.application.get_thumbnail import get_thumbnail
 from src.image.domain.image import ImageAttributes
 from src.image.domain.image import ImageBase64
@@ -44,7 +43,20 @@ def post_attributes(
 )
 def post_thumbnail(
         file: UploadFile,
-        resolution: Tuple[int, int] = (512, 512),
 ) -> ImageBase64:
-    image: bytes = get_thumbnail(file=file.file, resolution=resolution)
+    image: bytes = get_thumbnail(file=file.file, resolution=(512, 512))
+    return ImageBase64(image=image)
+
+
+@images_router.post(
+    path="/ndvi",
+    name="Get ndvi",
+    description="Computes an NDVI on the image and returns the result as a colored PNG.",
+    status_code=status.HTTP_200_OK,
+    response_model=ImageBase64,
+)
+def post_ndvi(
+        file: UploadFile,
+) -> ImageBase64:
+    image: bytes = get_ndvi(file=file.file, palette="palette")
     return ImageBase64(image=image)
