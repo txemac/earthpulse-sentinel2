@@ -46,30 +46,49 @@ Considerations:
   receive an image like input parameter. The definition of GET requests don't have the option to send a file, so,
   one solution is to use POST endpoints and send the file like a parameter.
 
-## Commands
+## Run
 
-Create a virtual environment and to activate it.
+### Terminal with virtual env
 
-### Run project:
+If you want to run the app in a terminal, the first step is to install dependencies:
 
-```bash
-uvicorn src.main:api
+```shell script
+pip install -r src/requirements.txt
+pip install -r tests/requirements.txt
 ```
 
-After run, you can check the health in:
+Run the API:
 
-http://127.0.0.1:8000/health
+```shell script
+uvicorn src.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+```
 
-And view the API documentation in:
+Test:
+
+```shell script
+pytest -vvv
+```
+
+### Docker
+
+Run the API:
+
+```shell script
+docker-compose up -d --build
+```
+
+Stop:
+
+```shell script
+docker-compose stop
+```
+
+Check the API with http://127.0.0.1:8000/health
+
+## Documentation
 
 http://127.0.0.1:8000/redoc
 
 or swagger in:
 
 http://127.0.0.1:8000/docs
-
-### Tests
-
-```bash
-pytest -vvv
-```
