@@ -4,7 +4,7 @@ from starlette.testclient import TestClient
 from tests.utils import assert_dicts
 
 
-def test_get_attributes_ok(
+def test_post_attributes_ok(
         client: TestClient,
 ) -> None:
     response = client.post(
@@ -22,11 +22,32 @@ def test_get_attributes_ok(
     assert_dicts(original=response.json(), expected=expected)
 
 
-def test_get_attributes_no_file(
+def test_post_attributes_no_file(
         client: TestClient,
 ) -> None:
     response = client.post(
         url="/images/attributes",
+        files=None,
+    )
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert response.json()["detail"][0]["msg"] == "field required"
+
+
+def test_post_thumbnail_ok(
+        client: TestClient,
+) -> None:
+    response = client.post(
+        url="/images/thumbnail",
+        files=dict(file=open("tests/files/S2L2A_2022-06-09.tiff", "rb")),
+    )
+    assert response.status_code == status.HTTP_200_OK
+
+
+def test_post_thumbnail_no_file(
+        client: TestClient,
+) -> None:
+    response = client.post(
+        url="/images/thumbnail",
         files=None,
     )
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

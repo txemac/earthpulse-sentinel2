@@ -1,9 +1,13 @@
+from typing import Tuple
+
 import rasterio
 from fastapi import APIRouter
 from fastapi import UploadFile
 from starlette import status
 
+from src.image.application.get_thumbnail import get_thumbnail
 from src.image.domain.image import ImageAttributes
+from src.image.domain.image import ImageBase64
 
 images_router = APIRouter()
 
@@ -16,7 +20,7 @@ images_router = APIRouter()
     status_code=status.HTTP_200_OK,
     response_model=ImageAttributes,
 )
-def get_attributes(
+def post_attributes(
         file: UploadFile,
 ) -> ImageAttributes:
     with rasterio.open(file.file) as dataset:
@@ -29,3 +33,18 @@ def get_attributes(
         )
 
     return result
+
+
+@images_router.post(
+    path="/thumbnail",
+    name="Get thumbnail",
+    description="Returns an RGB thumbnail of the image as a PNG.",
+    status_code=status.HTTP_200_OK,
+    response_model=ImageBase64,
+)
+def post_thumbnail(
+        file: UploadFile,
+        resolution: Tuple[int, int] = (512, 512),
+) -> ImageBase64:
+    image: bytes = get_thumbnail(file=file.file, resolution=resolution)
+    return ImageBase64(image=image)

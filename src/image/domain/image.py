@@ -19,3 +19,7 @@ class ImageAttributes(BaseModel):
                 georeferenced=[-0.00839, 38.747216, 0.2381, 38.878028],
             )
         )
+
+
+class ImageBase64(BaseModel):
+    image: str
