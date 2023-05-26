@@ -39,6 +39,17 @@ def test_post_thumbnail_ok(
     response = client.post(
         url="/images/thumbnail",
         files=dict(file=open("tests/files/S2L2A_2022-06-09.tiff", "rb")),
+        data=dict(resolution=(128, 128)),
+    )
+    assert response.status_code == status.HTTP_200_OK
+
+
+def test_post_thumbnail_no_resolution(
+        client: TestClient,
+) -> None:
+    response = client.post(
+        url="/images/thumbnail",
+        files=dict(file=open("tests/files/S2L2A_2022-06-09.tiff", "rb")),
     )
     assert response.status_code == status.HTTP_200_OK
 
@@ -55,6 +66,17 @@ def test_post_thumbnail_no_file(
 
 
 def test_post_ndvi_ok(
+        client: TestClient,
+) -> None:
+    response = client.post(
+        url="/images/ndvi",
+        files=dict(file=open("tests/files/S2L2A_2022-06-09.tiff", "rb")),
+        data=dict(palette="RGB"),
+    )
+    assert response.status_code == status.HTTP_200_OK
+
+
+def test_post_ndvi_no_palette(
         client: TestClient,
 ) -> None:
     response = client.post(

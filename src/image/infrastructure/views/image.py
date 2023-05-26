@@ -1,5 +1,10 @@
+from typing import Optional
+from typing import Tuple
+
 import rasterio
 from fastapi import APIRouter
+from fastapi import File
+from fastapi import Form
 from fastapi import UploadFile
 from starlette import status
 
@@ -20,7 +25,7 @@ images_router = APIRouter()
     response_model=ImageAttributes,
 )
 def post_attributes(
-        file: UploadFile,
+        file: UploadFile = File(...),
 ) -> ImageAttributes:
     with rasterio.open(file.file) as dataset:
         result = ImageAttributes(
@@ -42,9 +47,10 @@ def post_attributes(
     response_model=ImageBase64,
 )
 def post_thumbnail(
-        file: UploadFile,
+        file: UploadFile = File(...),
+        resolution: Optional[Tuple[int, int]] = Form(default=(512, 512)),
 ) -> ImageBase64:
-    image: bytes = get_thumbnail(file=file.file, resolution=(512, 512))
+    image: bytes = get_thumbnail(file=file.file, resolution=resolution)
     return ImageBase64(image=image)
 
 
@@ -56,7 +62,8 @@ def post_thumbnail(
     response_model=ImageBase64,
 )
 def post_ndvi(
-        file: UploadFile,
+        file: UploadFile = File(...),
+        palette: Optional[str] = Form(default="palette"),
 ) -> ImageBase64:
-    image: bytes = get_ndvi(file=file.file, palette="palette")
+    image: bytes = get_ndvi(file=file.file, palette=palette)
     return ImageBase64(image=image)
